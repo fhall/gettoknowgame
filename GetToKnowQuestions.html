@@ -1,0 +1,159 @@
+
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+    <meta charset="UTF-8">
+    <title>Bara en fråga till</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        body { font-family: sans-serif; background: #f8f8f8; padding: 20px; }
+        h2 { text-align: center; }
+        .card { background: white; border-radius: 8px; padding: 20px; margin: 20px auto; max-width: 500px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .question { font-size: 1.2em; margin: 1em;}
+        .controls, .category-select { text-align: center; margin-top: 20px; }
+        button, select { padding: 10px 20px; font-size: 1em; margin: 5px; border: none; border-radius: 5px; cursor: pointer; }
+        button { background-color: #4CAF50; color: white; }
+        select { background-color: #ffffff; border: 1px solid #ccc; }
+    </style>
+</head>
+<body>
+
+<h2>🎲 Bara en fråga till...</h2>
+<div class="card">
+    <div class="category-select">
+        <label for="category">Välj kategori:</label>
+        <select id="category">
+            <option value="basic">🔵 Grundläggande frågor</option>
+            <option value="curious">🟢 Lekfull nyfikenhet</option>
+            <option value="personal">🟡 Personligt och känsligt</option>
+            <option value="flirt">🔴 Flirt och närhet</option>
+        </select>
+    </div>
+    <div class="question" id="question">Välj en kategori och tryck på 'Nästa fråga'.</div>
+    <div class="controls">
+        <button onclick="nextQuestion()">Nästa fråga</button>
+    </div>
+</div>
+
+<script>
+const questions = {
+    basic: [
+"Vad heter du i mellannamn?",
+"Hur många syskon har du och vad heter de?",
+"Var är du uppvuxen?",
+"Vilket var ditt favoritämne i skolan?",
+"Vad jobbar du med – och trivs du med det?",
+"Har du några husdjur?",
+"Vad gör du helst en regnig söndag?",
+"Har du någon hobby eller något du brinner för?",
+"Vad äter du helst till frukost?",
+"Vad gör dig alltid på bra humör?",
+"Vad är din största vardagslyx?",
+"Vad tycker du om att resa – favoritresmål?",
+"Vilken typ av musik gillar du mest?",
+"Vad gillar du att titta på – serier, film, sport?",
+"Vad är ditt favoritgodis/snacks?",
+"Vad är din civilstatus?",
+"Vill du ha barn (eller fler barn)?",
+"Vad är det senaste du lärde dig?",
+"Vad är du stolt över i livet?",
+"Vad gör du helst på semestern?",
+"Är du introvert, extrovert eller mittemellan?",
+"Vilken är din favoritårstid och varför?",
+"Om du skulle beskriva dig själv med tre ord – vilka skulle det vara?",
+"Hur ser en perfekt helg ut för dig?",
+"Vad har du för relation till din familj?"
+    ],
+    curious: [
+"Vad är det konstigaste du tycker är attraktivt hos någon?",
+"Hur skulle din perfekta lediga dag se ut?",
+"Om du var en glassmak – vilken skulle du vara?",
+"Vad var din första crush känd för?",
+"Vad får dig att börja fnissa utan att kunna sluta?",
+"Är du mer morgonmänniska eller nattuggla?",
+"Vad är din guilty pleasure-låt?",
+"Vilken film har du sett flest gånger?",
+"Om du var tvungen att leva i en annan tid – vilken skulle du välja?",
+"Vad var din mest pinsamma tonårsgrej?",
+"Om du kunde läsa tankar i 5 minuter – vems skulle du välja?",
+"Har du någon oväntad talang?",
+"Vad är det mest spontana du någonsin gjort?",
+"Om vi två hamnade på en öde ö – vad skulle du vilja ta med?",
+"Vad är det första du lägger märke till hos någon du attraheras av?",
+"Om du fick äta bara en maträtt resten av livet – vad skulle det vara?",
+"Vilket djur påminner mest om dig och varför?",
+"Har du något konstigt partytrick?",
+"Vad var din största barndomsdröm?",
+"Vad är det töntigaste du älskar?",
+"Vilken emoji använder du för ofta?",
+"Har du någon oväntad fobi?",
+"Om du fick byta liv med en kändis i 24 timmar – vem skulle du välja?",
+"Vad var det första du tänkte när du vaknade i morse?",
+"Hur skulle du beskriva din humor med tre ord?"
+    ],
+    personal: [
+"När kände du dig riktigt sedd senast?",
+"Hur vet du att du kan lita på någon?",
+"Har du lätt eller svårt att släppa in folk?",
+"Vad har du kämpat med men är stolt över idag?",
+"Finns det något du ofta tänker på men sällan säger högt?",
+"Vad är det finaste någon gjort för dig?",
+"När grät du senast – och varför?",
+"Vad är en trygg plats för dig?",
+"Har du någon återkommande dröm eller mardröm?",
+"Vad vill du att andra ska förstå om dig?",
+"När har du känt dig riktigt fri?",
+"Vad gör dig nervös i relationer?",
+"Vad skulle du vilja lära dig att bli bättre på i livet?",
+"Hur känns det för dig när det blir tyst mellan två personer?",
+"Vad är en viktig lärdom du fått från tidigare relationer?",
+"Vad får dig att känna dig trygg i någons närhet?",
+"Vad tror du andra ofta missförstår om dig?",
+"Vilken händelse har format dig mest som person?",
+"När känner du dig som mest levande?",
+"Hur hanterar du känslan av att vara sårbar?",
+"Har du någonsin förlorat någon du älskat?",
+"Hur är du när du är kär?",
+"Vilken del av dig själv har du svårast att acceptera?",
+"Vad vill du helst inte att någon ska fråga dig – och varför?",
+"När känner du att du verkligen kopplar med någon?"
+    ],
+    flirt: [
+"Vad känns mest attraktivt med mig just nu?",
+"Har du fantiserat om oss på något sätt?",
+"Var skulle du helst vilja bli kysst?",
+"Om vi låg sked – skulle du vara stor eller liten?",
+"Vad är din största turn-on?",
+"När tycker du att beröring känns mest intimt?",
+"Vad är det sexigaste du vet som inte handlar om utseende?",
+"Om du fick viska något i mitt öra just nu – vad skulle du säga?",
+"Hur skulle du flörta med mig om du inte fick använda ord?",
+"Vad får dig att känna dig riktigt åtrådd?",
+"Har du en plats på kroppen du önskar fler rörde vid?",
+"Vad händer i dig just nu, helt ärligt?",
+"Har du tänkt på hur det skulle vara att vakna bredvid mig?",
+"Vill du att jag kommer närmare?",
+"Vad vill du att jag gör – just nu?",
+"Vilken typ av beröring får dig att smälta?",
+"Vad är något som alltid får dig i flirtigt humör?",
+"Vad är det mest romantiska du varit med om?",
+"Om jag låg nära dig just nu – vad skulle du göra?",
+"Hur känns det för dig att bli riktigt åtrådd?",
+"Har du någon oskyldig fantasi som du aldrig berättat för någon?",
+"Vad skulle du göra om vi hade en timme utan några gränser?",
+"Vilket ord tycker du låter mest sexigt när någon säger det till dig?",
+"Hur visar du att du är sugen på någon – utan att säga det?",
+"Om du fick stanna kvar i ett enda ögonblick mellan oss – vilket skulle det vara?"
+    ]
+};
+
+function nextQuestion() {
+    const selected = document.getElementById("category").value;
+    const qList = questions[selected];
+    const randomIndex = Math.floor(Math.random() * qList.length);
+    document.getElementById("question").innerText = qList[randomIndex];
+}
+</script>
+
+</body>
+</html>
